@@ -17,14 +17,18 @@ function App() {
 
   useEffect(() => {
     // Initialize data storage if not exists
-    if (!localStorage.getItem('articles')) {
-      localStorage.setItem('articles', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('teamPhotos')) {
-      localStorage.setItem('teamPhotos', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('publicFiles')) {
-      localStorage.setItem('publicFiles', JSON.stringify([]));
+    try {
+      if (!localStorage.getItem('articles')) {
+        localStorage.setItem('articles', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('teamPhotos')) {
+        localStorage.setItem('teamPhotos', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('publicFiles')) {
+        localStorage.setItem('publicFiles', JSON.stringify([]));
+      }
+    } catch (error) {
+      console.error('Error initializing localStorage:', error);
     }
   }, []);
 

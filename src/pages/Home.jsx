@@ -9,9 +9,15 @@ const Home = () => {
 
   useEffect(() => {
     const loadPhotos = () => {
-      const stored = localStorage.getItem('teamPhotos');
-      if (stored) {
-        setTeamPhotos(JSON.parse(stored));
+      try {
+        const stored = localStorage.getItem('teamPhotos');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setTeamPhotos(Array.isArray(parsed) ? parsed : []);
+        }
+      } catch (error) {
+        console.error('Error loading photos:', error);
+        setTeamPhotos([]);
       }
     };
 

@@ -99,7 +99,9 @@
       }
     },
     "download": "Download",
-    "noFiles": "No files available yet"
+    "noFiles": "No files available yet",
+    "error": "File data is missing",
+    "downloadError": "Error downloading file"
   },
   "admin": {
     "title": "Admin Panel",

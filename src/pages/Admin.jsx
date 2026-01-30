@@ -18,14 +18,38 @@ const Admin = () => {
   const [fileForm, setFileForm] = useState({ name: '', category: 'tdr', description: '', file: null });
 
   useEffect(() => {
-    const stored = localStorage.getItem('articles');
-    if (stored) setArticles(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem('articles');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setArticles(Array.isArray(parsed) ? parsed : []);
+      }
+    } catch (error) {
+      console.error('Error loading articles:', error);
+      setArticles([]);
+    }
 
-    const storedPhotos = localStorage.getItem('teamPhotos');
-    if (storedPhotos) setTeamPhotos(JSON.parse(storedPhotos));
+    try {
+      const storedPhotos = localStorage.getItem('teamPhotos');
+      if (storedPhotos) {
+        const parsed = JSON.parse(storedPhotos);
+        setTeamPhotos(Array.isArray(parsed) ? parsed : []);
+      }
+    } catch (error) {
+      console.error('Error loading photos:', error);
+      setTeamPhotos([]);
+    }
 
-    const storedFiles = localStorage.getItem('publicFiles');
-    if (storedFiles) setPublicFiles(JSON.parse(storedFiles));
+    try {
+      const storedFiles = localStorage.getItem('publicFiles');
+      if (storedFiles) {
+        const parsed = JSON.parse(storedFiles);
+        setPublicFiles(Array.isArray(parsed) ? parsed : []);
+      }
+    } catch (error) {
+      console.error('Error loading files:', error);
+      setPublicFiles([]);
+    }
   }, []);
 
   const handleLogin = (e) => {
@@ -44,25 +68,40 @@ const Admin = () => {
   };
 
   const saveArticles = (newArticles) => {
-    setArticles(newArticles);
-    localStorage.setItem('articles', JSON.stringify(newArticles));
+    try {
+      setArticles(newArticles);
+      localStorage.setItem('articles', JSON.stringify(newArticles));
+    } catch (error) {
+      console.error('Error saving articles:', error);
+      alert('Error saving articles. Please try again.');
+    }
   };
 
   const savePhotos = (newPhotos) => {
-    setTeamPhotos(newPhotos);
-    localStorage.setItem('teamPhotos', JSON.stringify(newPhotos));
-    // Dispatch custom event to update other components
-    window.dispatchEvent(new Event('photosUpdated'));
+    try {
+      setTeamPhotos(newPhotos);
+      localStorage.setItem('teamPhotos', JSON.stringify(newPhotos));
+      // Dispatch custom event to update other components
+      window.dispatchEvent(new Event('photosUpdated'));
+    } catch (error) {
+      console.error('Error saving photos:', error);
+      alert('Error saving photos. File might be too large.');
+    }
   };
 
   const saveFiles = (newFiles) => {
-    setPublicFiles(newFiles);
-    localStorage.setItem('publicFiles', JSON.stringify(newFiles));
+    try {
+      setPublicFiles(newFiles);
+      localStorage.setItem('publicFiles', JSON.stringify(newFiles));
+    } catch (error) {
+      console.error('Error saving files:', error);
+      alert('Error saving files. File might be too large.');
+    }
   };
 
   const handleArticleSubmit = (e) => {
     e.preventDefault();
-    if (editingArticle !== null) {
+    if (editingArticle !== null && editingArticle >= 0 && editingArticle < articles.length) {
       const updated = [...articles];
       updated[editingArticle] = {
         ...articleForm,
@@ -88,22 +127,45 @@ const Admin = () => {
   };
 
   const handleEditArticle = (index) => {
-    setEditingArticle(index);
-    setArticleForm(articles[index]);
-    setShowArticleForm(true);
+    if (index >= 0 && index < articles.length) {
+      setEditingArticle(index);
+      setArticleForm(articles[index]);
+      setShowArticleForm(true);
+    }
   };
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Check file size (limit to 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert('File is too large. Maximum size is 5MB.');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file.');
+        return;
+      }
+
       const reader = new FileReader();
+      reader.onerror = () => {
+        alert('Error reading file. Please try again.');
+      };
       reader.onloadend = () => {
-        const newPhoto = {
-          id: Date.now(),
-          url: reader.result,
-          name: file.name
-        };
-        savePhotos([...teamPhotos, newPhoto]);
+        try {
+          const newPhoto = {
+            id: Date.now(),
+            url: reader.result,
+            name: file.name
+          };
+          savePhotos([...teamPhotos, newPhoto]);
+        } catch (error) {
+          console.error('Error processing photo:', error);
+          alert('Error processing photo. Please try again.');
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -119,18 +181,33 @@ const Admin = () => {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Check file size (limit to 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        alert('File is too large. Maximum size is 10MB.');
+        return;
+      }
+
       const reader = new FileReader();
+      reader.onerror = () => {
+        alert('Error reading file. Please try again.');
+      };
       reader.onloadend = () => {
-        const newFile = {
-          id: Date.now(),
-          name: fileForm.name || file.name,
-          category: fileForm.category,
-          description: fileForm.description,
-          data: reader.result,
-          type: file.type
-        };
-        saveFiles([...publicFiles, newFile]);
-        setFileForm({ name: '', category: 'tdr', description: '', file: null });
+        try {
+          const newFile = {
+            id: Date.now(),
+            name: fileForm.name || file.name,
+            category: fileForm.category,
+            description: fileForm.description,
+            data: reader.result,
+            type: file.type
+          };
+          saveFiles([...publicFiles, newFile]);
+          setFileForm({ name: '', category: 'tdr', description: '', file: null });
+        } catch (error) {
+          console.error('Error processing file:', error);
+          alert('Error processing file. Please try again.');
+        }
       };
       reader.readAsDataURL(file);
     }
