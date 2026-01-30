@@ -5,8 +5,7 @@ const TelegramBot = () => {
   const { t } = useTranslation();
 
   const openTelegramBot = () => {
-    // Replace with actual Telegram bot link
-    window.open('https://t.me/your_bot_username', '_blank');
+    window.open('https://t.me/SeaPerchHelper_bot', '_blank');
   };
 
   return (
@@ -44,3 +43,5 @@ const TelegramBot = () => {
 };
 
 export default TelegramBot;
+
+

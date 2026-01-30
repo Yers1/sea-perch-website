@@ -46,7 +46,7 @@ npm run preview
 ## Admin Access
 
 - **URL**: `/admin`
-- **Password**: `ramaztop1mentor`
+- **Password**: `ramazantop1mentor`
 
 ## Important Notes
 

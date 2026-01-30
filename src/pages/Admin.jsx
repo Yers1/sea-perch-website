@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Admin.css';
 
-const ADMIN_PASSWORD = 'ramaztop1mentor';
+const ADMIN_PASSWORD = 'ramazantop1mentor';
 
 const Admin = () => {
   const { t } = useTranslation();
