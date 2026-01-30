@@ -1,0 +1,52 @@
+.telegram-bot-page {
+  min-height: 60vh;
+}
+
+.bot-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.bot-description-card {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.bot-description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
+.examples-card {
+  margin-bottom: 40px;
+}
+
+.examples-title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.examples-list {
+  list-style: none;
+  padding: 0;
+}
+
+.examples-list li {
+  padding: 15px;
+  margin-bottom: 10px;
+  background: var(--light-bg);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 6px;
+  line-height: 1.6;
+}
+
+.bot-action {
+  text-align: center;
+}
+
+.btn-large {
+  padding: 16px 40px;
+  font-size: 1.1rem;
+}

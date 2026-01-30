@@ -1,0 +1,147 @@
+{
+  "nav": {
+    "home": "Home",
+    "articles": "Articles",
+    "telegramBot": "Telegram Bot",
+    "resources": "Resources",
+    "files": "Files",
+    "admin": "Admin"
+  },
+  "home": {
+    "title": "Nomadic Guardians",
+    "subtitle": "Underwater Robotics Team from Astana, Kazakhstan",
+    "description": "We are a school STEM team participating in international SeaPerch West Asia 2026 competitions. Our mission is to design, build, and operate Remotely Operated underwater Vehicles (ROVs) for challenging submarine missions.",
+    "mission": {
+      "title": "Our Mission",
+      "text": "To inspire and educate the next generation of engineers and scientists through hands-on experience in underwater robotics, fostering innovation, teamwork, and technical excellence."
+    },
+    "goals": {
+      "title": "Our Goals",
+      "item1": "Excel in SeaPerch West Asia 2026 competition",
+      "item2": "Develop advanced ROV design and engineering skills",
+      "item3": "Promote STEM education in Kazakhstan",
+      "item4": "Build a strong international network"
+    },
+    "plans": {
+      "title": "Season Plans",
+      "item1": "Complete Technical Design Report",
+      "item2": "Build and test competition ROV",
+      "item3": "Participate in SeaPerch West Asia 2026",
+      "item4": "Share knowledge through articles and resources"
+    },
+    "sponsor": {
+      "title": "Our Sponsor",
+      "description": "We are grateful for the support of our sponsors who make our participation in international competitions possible."
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "articles": "Articles",
+      "resources": "Resources",
+      "files": "Files",
+      "telegramBot": "Telegram Bot"
+    }
+  },
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Engineering solutions, ROV design, and competition insights",
+    "noArticles": "No articles yet. Check back soon!",
+    "readMore": "Read More",
+    "author": "Author",
+    "date": "Date"
+  },
+  "telegramBot": {
+    "title": "Telegram Bot",
+    "subtitle": "Get instant answers about SeaPerch Manual",
+    "description": "Our Telegram bot is designed to help you quickly find information from the SeaPerch Manual Book. Ask questions about rules, requirements, technical specifications, and more.",
+    "examples": {
+      "title": "Example Questions",
+      "q1": "What are the requirements for the Technical Design Report?",
+      "q2": "What is the maximum ROV size?",
+      "q3": "What safety rules must be followed?",
+      "q4": "How is the competition scored?"
+    },
+    "openBot": "Open Telegram Bot"
+  },
+  "resources": {
+    "title": "Resources",
+    "subtitle": "Useful materials for SeaPerch competition preparation",
+    "categories": {
+      "manuals": "SeaPerch Manuals & Rules",
+      "engineering": "Engineering & STEM Resources",
+      "cad": "CAD & Design Tools",
+      "hydrodynamics": "Hydrodynamics Basics",
+      "safety": "Safety & Competition Rules"
+    }
+  },
+  "files": {
+    "title": "Team Files",
+    "subtitle": "Public files and documents from Nomadic Guardians",
+    "required": {
+      "title": "Required",
+      "tdr": {
+        "title": "Technical Design Report",
+        "description": "Communicate intentional design process and description of SeaPerch ROV for 2026"
+      },
+      "teamIntro": {
+        "title": "Team Introduction",
+        "description": "Team logo, description, character, values, and social media links"
+      }
+    },
+    "optional": {
+      "title": "Optional",
+      "poster": {
+        "title": "Real-World Application Poster",
+        "description": "Digital poster describing real-world application of underwater ROV"
+      },
+      "outreach": {
+        "title": "Community Outreach",
+        "description": "One-page PDF with photos, videos, and description of community contribution. Note: This section is not scored but may be considered for special awards."
+      }
+    },
+    "download": "Download",
+    "noFiles": "No files available yet"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "login": "Login",
+    "password": "Password",
+    "submit": "Submit",
+    "logout": "Logout",
+    "sections": {
+      "articles": "Manage Articles",
+      "photos": "Manage Team Photos",
+      "files": "Manage Files"
+    },
+    "articles": {
+      "title": "Article Management",
+      "add": "Add New Article",
+      "edit": "Edit",
+      "delete": "Delete",
+      "form": {
+        "title": "Title",
+        "author": "Author",
+        "content": "Content",
+        "save": "Save",
+        "cancel": "Cancel"
+      }
+    },
+    "photos": {
+      "title": "Team Photos",
+      "upload": "Upload Photo",
+      "delete": "Delete"
+    },
+    "files": {
+      "title": "File Management",
+      "upload": "Upload File",
+      "category": "Category",
+      "name": "File Name",
+      "description": "Description",
+      "delete": "Delete"
+    }
+  },
+  "footer": {
+    "team": "Nomadic Guardians",
+    "location": "Astana, Kazakhstan",
+    "followUs": "Follow Us"
+  }
+}
