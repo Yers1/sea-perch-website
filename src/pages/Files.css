@@ -71,6 +71,36 @@
   text-align: center;
 }
 
+.team-section {
+  margin-bottom: 60px;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-name {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid var(--primary-color);
+}
+
+.no-teams {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.file-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-left: 10px;
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .file-item {
     flex-direction: column;

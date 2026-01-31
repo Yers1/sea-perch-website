@@ -11,11 +11,13 @@ const Admin = () => {
   const [activeSection, setActiveSection] = useState('articles');
   const [articles, setArticles] = useState([]);
   const [teamPhotos, setTeamPhotos] = useState([]);
-  const [publicFiles, setPublicFiles] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [editingArticle, setEditingArticle] = useState(null);
   const [articleForm, setArticleForm] = useState({ title: '', author: '', content: '' });
-  const [fileForm, setFileForm] = useState({ name: '', category: 'tdr', description: '', file: null });
+  const [fileForm, setFileForm] = useState({ name: '', category: 'tdr', description: '', file: null, teamId: '' });
+  const [teamForm, setTeamForm] = useState({ name: '' });
+  const [showTeamForm, setShowTeamForm] = useState(false);
 
   useEffect(() => {
     try {
@@ -41,14 +43,34 @@ const Admin = () => {
     }
 
     try {
-      const storedFiles = localStorage.getItem('publicFiles');
-      if (storedFiles) {
-        const parsed = JSON.parse(storedFiles);
-        setPublicFiles(Array.isArray(parsed) ? parsed : []);
+      const storedTeams = localStorage.getItem('teams');
+      if (storedTeams) {
+        const parsed = JSON.parse(storedTeams);
+        setTeams(Array.isArray(parsed) ? parsed : []);
+      } else {
+        // Migrate old publicFiles to teams structure if exists
+        const oldFiles = localStorage.getItem('publicFiles');
+        if (oldFiles) {
+          try {
+            const parsed = JSON.parse(oldFiles);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              // Create default team with old files
+              const defaultTeam = {
+                id: Date.now(),
+                name: 'Nomadic Guardians',
+                files: parsed
+              };
+              setTeams([defaultTeam]);
+              localStorage.setItem('teams', JSON.stringify([defaultTeam]));
+            }
+          } catch (e) {
+            console.error('Error migrating files:', e);
+          }
+        }
       }
     } catch (error) {
-      console.error('Error loading files:', error);
-      setPublicFiles([]);
+      console.error('Error loading teams:', error);
+      setTeams([]);
     }
   }, []);
 
@@ -74,6 +96,8 @@ const Admin = () => {
     try {
       setArticles(newArticles);
       localStorage.setItem('articles', JSON.stringify(newArticles));
+      // Dispatch event to update other components
+      window.dispatchEvent(new Event('articlesUpdated'));
     } catch (error) {
       console.error('Error saving articles:', error);
       alert('Error saving articles. Please try again.');
@@ -92,13 +116,15 @@ const Admin = () => {
     }
   };
 
-  const saveFiles = (newFiles) => {
+  const saveTeams = (newTeams) => {
     try {
-      setPublicFiles(newFiles);
-      localStorage.setItem('publicFiles', JSON.stringify(newFiles));
+      setTeams(newTeams);
+      localStorage.setItem('teams', JSON.stringify(newTeams));
+      // Dispatch event to update Files page
+      window.dispatchEvent(new Event('teamsUpdated'));
     } catch (error) {
-      console.error('Error saving files:', error);
-      alert('Error saving files. File might be too large.');
+      console.error('Error saving teams:', error);
+      alert('Error saving teams. File might be too large.');
     }
   };
 
@@ -181,9 +207,36 @@ const Admin = () => {
     }
   };
 
+  const handleTeamSubmit = (e) => {
+    e.preventDefault();
+    if (!teamForm.name.trim()) {
+      alert('Please enter a team name');
+      return;
+    }
+    const newTeam = {
+      id: Date.now(),
+      name: teamForm.name.trim(),
+      files: []
+    };
+    saveTeams([...teams, newTeam]);
+    setTeamForm({ name: '' });
+    setShowTeamForm(false);
+  };
+
+  const handleDeleteTeam = (teamId) => {
+    if (confirm('Are you sure you want to delete this team and all its files?')) {
+      const updated = teams.filter(team => team.id !== teamId);
+      saveTeams(updated);
+    }
+  };
+
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (!fileForm.teamId) {
+        alert('Please select a team first');
+        return;
+      }
       // Check file size (limit to 10MB)
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
@@ -205,8 +258,14 @@ const Admin = () => {
             data: reader.result,
             type: file.type
           };
-          saveFiles([...publicFiles, newFile]);
-          setFileForm({ name: '', category: 'tdr', description: '', file: null });
+          const updatedTeams = teams.map(team => {
+            if (team.id === parseInt(fileForm.teamId)) {
+              return { ...team, files: [...team.files, newFile] };
+            }
+            return team;
+          });
+          saveTeams(updatedTeams);
+          setFileForm({ name: '', category: 'tdr', description: '', file: null, teamId: '' });
         } catch (error) {
           console.error('Error processing file:', error);
           alert('Error processing file. Please try again.');
@@ -216,10 +275,15 @@ const Admin = () => {
     }
   };
 
-  const handleDeleteFile = (id) => {
+  const handleDeleteFile = (teamId, fileId) => {
     if (confirm('Are you sure you want to delete this file?')) {
-      const updated = publicFiles.filter(file => file.id !== id);
-      saveFiles(updated);
+      const updatedTeams = teams.map(team => {
+        if (team.id === teamId) {
+          return { ...team, files: team.files.filter(file => file.id !== fileId) };
+        }
+        return team;
+      });
+      saveTeams(updatedTeams);
     }
   };
 
@@ -408,63 +472,132 @@ const Admin = () => {
           <div className="admin-section">
             <div className="section-header">
               <h2>{t('admin.files.title')}</h2>
+              <button
+                className="btn btn-primary"
+                onClick={() => setShowTeamForm(true)}
+              >
+                {t('admin.files.addTeam') || 'Add Team'}
+              </button>
             </div>
 
-            <form className="file-form">
-              <div className="form-group">
-                <label>{t('admin.files.name')}</label>
-                <input
-                  type="text"
-                  value={fileForm.name}
-                  onChange={(e) => setFileForm({ ...fileForm, name: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>{t('admin.files.category')}</label>
-                <select
-                  value={fileForm.category}
-                  onChange={(e) => setFileForm({ ...fileForm, category: e.target.value })}
-                >
-                  <option value="tdr">Technical Design Report</option>
-                  <option value="teamIntro">Team Introduction</option>
-                  <option value="poster">Real-World Application Poster</option>
-                  <option value="outreach">Community Outreach</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>{t('admin.files.description')}</label>
-                <textarea
-                  value={fileForm.description}
-                  onChange={(e) => setFileForm({ ...fileForm, description: e.target.value })}
-                  rows="3"
-                />
-              </div>
-              <div className="form-group">
-                <label>{t('admin.files.upload')}</label>
-                <input
-                  type="file"
-                  onChange={handleFileUpload}
-                />
-              </div>
-            </form>
-
-            <div className="files-list">
-              {publicFiles.map(file => (
-                <div key={file.id} className="file-item-admin">
-                  <div>
-                    <h4>{file.name}</h4>
-                    <p className="file-meta">Category: {file.category}</p>
-                    {file.description && <p>{file.description}</p>}
-                  </div>
+            {/* Add Team Form */}
+            {showTeamForm && (
+              <form className="team-form" onSubmit={handleTeamSubmit} style={{ marginBottom: '30px', padding: '20px', background: '#f5f5f5', borderRadius: '8px' }}>
+                <div className="form-group">
+                  <label>{t('admin.files.teamName') || 'Team Name'}</label>
+                  <input
+                    type="text"
+                    value={teamForm.name}
+                    onChange={(e) => setTeamForm({ name: e.target.value })}
+                    required
+                    placeholder="Enter team name"
+                  />
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="btn btn-primary">
+                    {t('admin.files.addTeam') || 'Add Team'}
+                  </button>
                   <button
-                    className="btn btn-secondary btn-small"
-                    onClick={() => handleDeleteFile(file.id)}
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setShowTeamForm(false);
+                      setTeamForm({ name: '' });
+                    }}
                   >
-                    {t('admin.files.delete')}
+                    {t('admin.articles.form.cancel')}
                   </button>
                 </div>
-              ))}
-            </div>
+              </form>
+            )}
+
+            {/* Teams List */}
+            {teams.length === 0 ? (
+              <p style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                {t('admin.files.noTeams') || 'No teams yet. Add a team to start uploading files.'}
+              </p>
+            ) : (
+              teams.map(team => (
+                <div key={team.id} style={{ marginBottom: '40px', padding: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h3 style={{ margin: 0 }}>{team.name}</h3>
+                    <button
+                      className="btn btn-secondary btn-small"
+                      onClick={() => handleDeleteTeam(team.id)}
+                    >
+                      {t('admin.files.deleteTeam') || 'Delete Team'}
+                    </button>
+                  </div>
+
+                  {/* File Upload Form for this team */}
+                  <form className="file-form" style={{ marginBottom: '20px', padding: '15px', background: '#fafafa', borderRadius: '4px' }}>
+                    <div className="form-group">
+                      <label>{t('admin.files.name')}</label>
+                      <input
+                        type="text"
+                        value={fileForm.teamId === team.id.toString() ? fileForm.name : ''}
+                        onChange={(e) => setFileForm({ ...fileForm, name: e.target.value, teamId: team.id.toString() })}
+                        placeholder="File name (optional)"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>{t('admin.files.category')}</label>
+                      <select
+                        value={fileForm.teamId === team.id.toString() ? fileForm.category : 'tdr'}
+                        onChange={(e) => setFileForm({ ...fileForm, category: e.target.value, teamId: team.id.toString() })}
+                      >
+                        <option value="tdr">Technical Design Report</option>
+                        <option value="teamIntro">Team Introduction</option>
+                        <option value="poster">Real-World Application Poster</option>
+                        <option value="outreach">Community Outreach</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>{t('admin.files.description')}</label>
+                      <textarea
+                        value={fileForm.teamId === team.id.toString() ? fileForm.description : ''}
+                        onChange={(e) => setFileForm({ ...fileForm, description: e.target.value, teamId: team.id.toString() })}
+                        rows="3"
+                        placeholder="File description (optional)"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>{t('admin.files.upload')}</label>
+                      <input
+                        type="file"
+                        onChange={(e) => {
+                          setFileForm({ ...fileForm, teamId: team.id.toString() });
+                          handleFileUpload(e);
+                        }}
+                      />
+                    </div>
+                  </form>
+
+                  {/* Files List for this team */}
+                  {team.files && team.files.length > 0 ? (
+                    <div className="files-list">
+                      {team.files.map(file => (
+                        <div key={file.id} className="file-item-admin">
+                          <div>
+                            <h4>{file.name}</h4>
+                            <p className="file-meta">Category: {file.category}</p>
+                            {file.description && <p>{file.description}</p>}
+                          </div>
+                          <button
+                            className="btn btn-secondary btn-small"
+                            onClick={() => handleDeleteFile(team.id, file.id)}
+                          >
+                            {t('admin.files.delete')}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p style={{ color: '#999', fontStyle: 'italic' }}>{t('admin.files.noFiles') || 'No files for this team yet.'}</p>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>

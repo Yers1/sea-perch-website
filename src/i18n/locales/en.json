@@ -68,7 +68,6 @@
     "categories": {
       "manuals": "SeaPerch Manuals & Rules",
       "engineering": "Engineering & STEM Resources",
-      "cad": "CAD & Design Tools",
       "hydrodynamics": "Hydrodynamics Basics",
       "safety": "Safety & Competition Rules"
     }
@@ -139,7 +138,12 @@
       "category": "Category",
       "name": "File Name",
       "description": "Description",
-      "delete": "Delete"
+      "delete": "Delete",
+      "addTeam": "Add Team",
+      "deleteTeam": "Delete Team",
+      "teamName": "Team Name",
+      "noTeams": "No teams yet. Add a team to start uploading files.",
+      "noFiles": "No files for this team yet."
     }
   },
   "footer": {

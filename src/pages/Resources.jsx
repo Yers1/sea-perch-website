@@ -18,27 +18,18 @@ const Resources = () => {
       key: 'engineering',
       icon: '⚙️',
       links: [
-        { name: 'ROV Design Principles', url: '#' },
-        { name: 'Underwater Robotics Basics', url: '#' },
-        { name: 'STEM Education Resources', url: '#' }
-      ]
-    },
-    {
-      key: 'cad',
-      icon: '🖥️',
-      links: [
-        { name: 'CAD Software for ROV Design', url: '#' },
-        { name: '3D Modeling Tutorials', url: '#' },
-        { name: 'Design Best Practices', url: '#' }
+        { name: 'ROV Design Principles', url: 'https://seaperchwestasia.org/' },
+        { name: 'Underwater Robotics Basics', url: 'https://seaperchwestasia.org/' },
+        { name: 'STEM Education Resources', url: 'https://seaperchwestasia.org/' }
       ]
     },
     {
       key: 'hydrodynamics',
       icon: '🌊',
       links: [
-        { name: 'Hydrodynamics Fundamentals', url: '#' },
-        { name: 'Fluid Dynamics for ROVs', url: '#' },
-        { name: 'Buoyancy and Stability', url: '#' }
+        { name: 'Hydrodynamics Fundamentals', url: 'https://seaperchwestasia.org/' },
+        { name: 'Fluid Dynamics for ROVs', url: 'https://seaperchwestasia.org/' },
+        { name: 'Buoyancy and Stability', url: 'https://seaperchwestasia.org/' }
       ]
     },
     {
@@ -47,7 +38,7 @@ const Resources = () => {
       links: [
         { name: 'Safety Rules and Guidelines', url: 'https://seaperchwestasia.org/challenge-manual/' },
         { name: 'Competition Rules 2026', url: 'https://seaperchwestasia.org/challenge-manual/' },
-        { name: 'Equipment Safety Checklist', url: '#' }
+        { name: 'Equipment Safety Checklist', url: 'https://seaperchwestasia.org/challenge-manual/' }
       ]
     }
   ];

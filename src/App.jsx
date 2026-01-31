@@ -24,8 +24,8 @@ function App() {
       if (!localStorage.getItem('teamPhotos')) {
         localStorage.setItem('teamPhotos', JSON.stringify([]));
       }
-      if (!localStorage.getItem('publicFiles')) {
-        localStorage.setItem('publicFiles', JSON.stringify([]));
+      if (!localStorage.getItem('teams')) {
+        localStorage.setItem('teams', JSON.stringify([]));
       }
     } catch (error) {
       console.error('Error initializing localStorage:', error);

@@ -8,16 +8,35 @@ const Articles = () => {
   const [selectedArticle, setSelectedArticle] = useState(null);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('articles');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setArticles(Array.isArray(parsed) ? parsed : []);
+    const loadArticles = () => {
+      try {
+        const stored = localStorage.getItem('articles');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setArticles(Array.isArray(parsed) ? parsed : []);
+        }
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        setArticles([]);
       }
-    } catch (error) {
-      console.error('Error loading articles:', error);
-      setArticles([]);
-    }
+    };
+
+    loadArticles();
+
+    // Listen for articles updates
+    const handleArticlesUpdate = () => {
+      loadArticles();
+    };
+    window.addEventListener('articlesUpdated', handleArticlesUpdate);
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'articles') {
+        loadArticles();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('articlesUpdated', handleArticlesUpdate);
+    };
   }, []);
 
   useEffect(() => {
