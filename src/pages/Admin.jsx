@@ -54,11 +54,14 @@ const Admin = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    // Trim whitespace and compare
+    const trimmedPassword = password.trim();
+    if (trimmedPassword === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       setPassword('');
     } else {
-      alert('Incorrect password');
+      alert(t('admin.loginError') || 'Incorrect password. Please try again.');
+      setPassword('');
     }
   };
 

@@ -109,6 +109,7 @@
     "password": "Password",
     "submit": "Submit",
     "logout": "Logout",
+    "loginError": "Incorrect password. Please try again.",
     "sections": {
       "articles": "Manage Articles",
       "photos": "Manage Team Photos",
